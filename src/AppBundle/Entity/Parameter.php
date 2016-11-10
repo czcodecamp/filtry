@@ -28,7 +28,7 @@ class Parameter
 
 	/**
 	 * @var string
-	 * @ORM\Column(type="smallint")
+	 * @ORM\Column(type="smallint", options={"comment": "Options: 1=string, 2=float, 3=boolean"})
 	 */
 	private $type;
 
