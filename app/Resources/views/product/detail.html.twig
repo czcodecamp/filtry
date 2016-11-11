@@ -6,4 +6,19 @@
     </ol>
     <h1> {{ product.title }}</h1>
     <img src="{{ product.image }}" />
+    <h3>Parametre:</h3>
+    <ul>
+        {% for parameter in parameters %}
+            <li>
+                {{ parameter.parameter.name }}:
+                {% if parameter.parameter.type == 1 %}
+                    {{ parameter.valueString }}
+                {% elseif parameter.parameter.type == 2 %}
+                    {{ parameter.valueFloat }}
+                {% elseif parameter.parameter.type == 3 %}
+                    {% if parameter.valueBoolean %} ano {% else %} nie {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

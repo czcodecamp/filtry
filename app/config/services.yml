@@ -56,6 +56,16 @@ services:
     factory:   ['@doctrine.orm.default_entity_manager', getRepository]
     arguments: ['AppBundle\Entity\Product']
 
+  app.repository.parameter_repository:
+    class: AppBundle\Repository\ParameterRepository
+    factory:   ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments: ['AppBundle\Entity\Parameter']
+
+  app.repository.product_parameter_repository:
+    class: AppBundle\Repository\ProductParameterRepository
+    factory:   ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments: ['AppBundle\Entity\ProductParameter']
+
   encoder:
     class: Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder
     arguments:

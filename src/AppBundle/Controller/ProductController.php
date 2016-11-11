@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Facade\ProductFacade;
+use AppBundle\Repository\ProductParameterRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -16,10 +17,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ProductController
 {
 	private $productFacade;
+	private $productParameterRepository;
 
-	public function __construct(ProductFacade $productFacade)
+	public function __construct(ProductFacade $productFacade, ProductParameterRepository $productParameterRepository)
 	{
 		$this->productFacade = $productFacade;
+		$this->productParameterRepository = $productParameterRepository;
 	}
 	/**
 	 * @Route("/product/{slug}", name="product_detail")
@@ -34,6 +37,7 @@ class ProductController
 
 		return [
 			"product" => $product,
+			"parameters" => $this->productParameterRepository->findByProduct($product),
 		];
 	}
 
