@@ -11,11 +11,11 @@
         {% for parameter in parameters %}
             <li>
                 {{ parameter.parameter.name }}:
-                {% if parameter.parameter.type == 1 %}
+                {% if parameter.parameter.dataType == 'string' %}
                     {{ parameter.valueString }}
-                {% elseif parameter.parameter.type == 2 %}
+                {% elseif parameter.parameter.dataType == 'float' %}
                     {{ parameter.valueFloat }}
-                {% elseif parameter.parameter.type == 3 %}
+                {% elseif parameter.parameter.dataType == 'boolean' %}
                     {% if parameter.valueBoolean %} ano {% else %} nie {% endif %}
                 {% endif %}
             </li>
