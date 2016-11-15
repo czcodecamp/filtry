@@ -28,9 +28,9 @@ class Parameter
 
 	/**
 	 * @var string
-	 * @ORM\Column(type="smallint", options={"comment": "Options: 1=string, 2=float, 3=boolean"})
+	 * @ORM\Column(type="string", columnDefinition="ENUM('string', 'float', 'boolean')", nullable=false)
 	 */
-	private $type;
+	private $dataType;
 
 	/**
 	 * @var string
@@ -65,20 +65,20 @@ class Parameter
 	}
 
 	/**
-	 * @return int
+	 * @return string
 	 */
-	public function getType()
+	public function getDataType()
 	{
-		return $this->type;
+		return $this->dataType;
 	}
 
 	/**
-	 * @param int $type
+	 * @param string $dataType
 	 * @return self
 	 */
-	public function setType($type)
+	public function setDataType($dataType)
 	{
-		$this->type = $type;
+		$this->dataType = $dataType;
 		return $this;
 	}
 
