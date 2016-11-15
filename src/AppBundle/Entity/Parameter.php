@@ -34,6 +34,12 @@ class Parameter
 
 	/**
 	 * @var string
+	 * @ORM\Column(type="string", columnDefinition="ENUM('multiselect', 'yesno', 'range')", nullable=false)
+	 */
+	private $filterType;
+
+	/**
+	 * @var string
 	 * @ORM\Column(type="integer")
 	 */
 	private $priority;
@@ -79,6 +85,24 @@ class Parameter
 	public function setDataType($dataType)
 	{
 		$this->dataType = $dataType;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFilterType()
+	{
+		return $this->filterType;
+	}
+
+	/**
+	 * @param string $filterType
+	 * @return self
+	 */
+	public function setFilterType($filterType)
+	{
+		$this->filterType = $filterType;
 		return $this;
 	}
 
