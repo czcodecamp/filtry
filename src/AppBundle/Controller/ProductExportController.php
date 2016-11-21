@@ -15,6 +15,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class ProductExportController
 {
+	const ES_BASE_PRODUCT_URL = 'http://sandbox-cluster-2194566853.eu-west-1.bonsaisearch.net/codecampfilter/product/';
+	const ES_USERNAME = 'h80n7saww1';
+	const ES_PASSWORD = 'kkvxaaia0h';
+
 	private $productFacade;
 	private $productParameterRepository;
 	private $productCategoryRepository;
@@ -26,21 +30,21 @@ class ProductExportController
 		$this->productCategoryRepository = $productCategoryRepository;
 	}
 
-	private function httpPost($url, $data, $username = false, $password = false, $headers = ['Content-Type: application/json'])
+	private function httpRequest($url, $data, $method = false, $headers = ['Content-Type: application/json'])
 	{
 		$ch = curl_init();
 
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_USERPWD, self::ES_USERNAME . ":" . self::ES_PASSWORD);
 
-		$result = curl_exec($ch);
-
-		if ($username && $password) {
-			curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+		if ($method) {
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+		} else {
+			curl_setopt($ch, CURLOPT_POST, 1);
 		}
 
 		$response = curl_exec($ch);
@@ -48,11 +52,27 @@ class ProductExportController
 		return $response;
 	}
 
-	/**
-	 * @Route("/product-export", name="product_export")
-	 */
-	public function exportAction()
+	private function esDeleteAllProducts($url)
 	{
+		$data = '{
+			"query": { 
+				"match_all": {}
+			}
+		}';
+
+		return $this->httpRequest($url, $data, 'DELETE');
+	}
+
+	/**
+	 * @Route("/product-export/{overwrite}", name="product_export", defaults={"overwrite": 0})
+	 */
+	public function exportAction($overwrite)
+	{
+		if ($overwrite) {
+			// ES - remove all products
+			$this->esDeleteAllProducts(self::ES_BASE_PRODUCT_URL . '_query');
+		}
+
 		$rawData = $this->productFacade->getAll(100000, 0);
 		$data = [];
 		foreach ($rawData as $rawProduct) {
@@ -106,17 +126,10 @@ class ProductExportController
 				} while ($rc = $rc->getParentCategory());
 			}
 
-			// add to elastic (1.server)
-//			$url = 'http://sandbox-cluster-2194566853.eu-west-1.bonsaisearch.net/codecampfilter/product/'. $product->id;
-//			$username = 'h80n7saww1';
-//			$password = 'kkvxaaia0h';
-//			$this->httpPost($url, json_encode($product), $username, $password);
-
-			// add to elastic (2.server)
-//			$url = 'https://bifur-eu-west-1.searchly.com/codecampfilter/product/'. $product->id;
-//			$username = 'site';
-//			$password = 'd45bde9b5bae8ac8c92c98951104dd4b';
-//			$this->httpPost($url, json_encode($product), $username, $password);
+			if ($overwrite) {
+				// ES - add product
+				$this->httpRequest(self::ES_BASE_PRODUCT_URL . $product->id, json_encode($product));
+			}
 
 			$data[] = $product;
 		}
