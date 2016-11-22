@@ -15,9 +15,89 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class ProductExportController
 {
-	const ES_BASE_PRODUCT_URL = 'http://sandbox-cluster-2194566853.eu-west-1.bonsaisearch.net/codecampfilter/product/';
+	const ES_INDEX_URL = 'http://sandbox-cluster-2194566853.eu-west-1.bonsaisearch.net/codecampfilter/';
 	const ES_USERNAME = 'h80n7saww1';
 	const ES_PASSWORD = 'kkvxaaia0h';
+	const ES_MAPPING = ' {
+		 "mappings" : {
+			 "product" : {
+				"properties": {
+				   "id": {
+					  "type": "long"
+				   },
+				   "title": {
+					  "type": "string"
+				   },
+				   "description": {
+					  "type": "string"
+				   },
+				   "slug": {
+					  "type": "string"
+				   },
+				   "image": {
+					  "type": "string"
+				   },
+				   "price": {
+					  "type": "long"
+				   },
+				   "rank": {
+					  "type": "long"
+				   },
+				   "parameters": {
+					 "type": "nested",
+					  "properties": {
+						 "id": {
+							"type": "long"
+						 },
+						 "name": {
+							"type": "string"
+						 },
+						 "dataType": {
+							"type": "string"
+						 },
+						 "filterType": {
+							"type": "string"
+						 },
+						 "priority": {
+							"type": "long"
+						 },
+						 "value": {
+						   "type": "nested",
+							"properties": {
+							   "id": {
+								  "type": "long"
+							   },
+							   "valueString": {
+								  "type": "string"
+							   },
+							   "valueFloat": {
+								  "type": "long"
+							   },
+							   "valueBoolean": {
+								  "type": "boolean"
+							   }
+							}
+						 }
+					  }
+				   },
+				   "categories": {
+					  "type": "nested",
+					  "properties": {
+						 "id": {
+							"type": "long"
+						 },
+						 "title": {
+							"type": "string"
+						 },
+						 "slug": {
+							"type": "string"
+						 }
+					  }
+				   }
+				}
+			 }
+		 }
+	 }';
 
 	private $productFacade;
 	private $productParameterRepository;
@@ -30,7 +110,7 @@ class ProductExportController
 		$this->productCategoryRepository = $productCategoryRepository;
 	}
 
-	private function httpRequest($url, $data, $method = false, $headers = ['Content-Type: application/json'])
+	private function httpRequest($url, $data = '', $method = false, $headers = ['Content-Type: application/json'])
 	{
 		$ch = curl_init();
 
@@ -52,25 +132,17 @@ class ProductExportController
 		return $response;
 	}
 
-	private function esDeleteAllProducts($url)
-	{
-		$data = '{
-			"query": { 
-				"match_all": {}
-			}
-		}';
-
-		return $this->httpRequest($url, $data, 'DELETE');
-	}
-
 	/**
 	 * @Route("/product-export/{overwrite}", name="product_export", defaults={"overwrite": 0})
 	 */
 	public function exportAction($overwrite)
 	{
 		if ($overwrite) {
-			// ES - remove all products
-			$this->esDeleteAllProducts(self::ES_BASE_PRODUCT_URL . '_query');
+			// ES - remove index
+			$this->httpRequest(self::ES_INDEX_URL, '', 'DELETE');
+
+			// ES - create index + mapping
+			$this->httpRequest(self::ES_INDEX_URL, self::ES_MAPPING);
 		}
 
 		$rawData = $this->productFacade->getAll(100000, 0);
@@ -128,7 +200,7 @@ class ProductExportController
 
 			if ($overwrite) {
 				// ES - add product
-				$this->httpRequest(self::ES_BASE_PRODUCT_URL . $product->id, json_encode($product));
+				$this->httpRequest(self::ES_INDEX_URL . 'product/' . $product->id, json_encode($product));
 			}
 
 			$data[] = $product;
