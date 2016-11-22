@@ -62,7 +62,6 @@ class ProductExportController
 							"type": "long"
 						 },
 						 "value": {
-						   "type": "nested",
 							"properties": {
 							   "id": {
 								  "type": "long"
