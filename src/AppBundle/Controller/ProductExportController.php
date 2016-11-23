@@ -67,10 +67,11 @@ class ProductExportController
 								  "type": "long"
 							   },
 							   "valueString": {
-								  "type": "string"
+								  "type": "string",
+								  "index": "not_analyzed"
 							   },
 							   "valueFloat": {
-								  "type": "long"
+								  "type": "double"
 							   },
 							   "valueBoolean": {
 								  "type": "boolean"
