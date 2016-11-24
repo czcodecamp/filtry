@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Facade\CategoryFacade;
 use AppBundle\Facade\ProductFacade;
 use AppBundle\Service\Paginator;
+use AppBundle\Service\FilterGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,14 +19,17 @@ class CategoryController
 {
 	private $categoryFacade;
 	private $productFacade;
+	private $filterGenerator;
 
 	public function __construct(
 		CategoryFacade $categoryFacade,
-		ProductFacade $productFacade
+		ProductFacade $productFacade,
+		FilterGenerator $filterGenerator
 	) {
 
 		$this->categoryFacade = $categoryFacade;
 		$this->productFacade = $productFacade;
+		$this->filterGenerator = $filterGenerator;
 	}
 	/**
 	 * @Route("/vyber/{slug}/{page}", name="category_detail", requirements={"page": "\d+"}, defaults={"page": 1})
@@ -50,7 +54,20 @@ class CategoryController
 			"currentPage" => $page,
 			"totalPages" => $paginator->getTotalPageCount(),
 			"pageRange" => $paginator->getPageRange(5),
+			"testFilters" => $this->getTestFilters($category->getId()),
 		];
 	}
 
+	private function getTestFilters($categoryId)
+	{
+		$testInputFilters = [
+			1 => ['Apple', 'Samsung'],
+			2 => [10000, 30000],
+			3 => true,
+		];
+
+		$this->filterGenerator->setInputFilters($categoryId, $testInputFilters);
+
+		return $this->filterGenerator->generateFilters();
+	}
 }
