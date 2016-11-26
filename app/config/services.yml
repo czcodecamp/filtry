@@ -80,10 +80,14 @@ services:
     arguments:
       - 13
 
-  app.service.filter_generator_service:
-    class: AppBundle\Service\FilterGenerator
-    autowire: true
-
   app.service.elasticsearch_query_generator_service:
     class: AppBundle\Service\ElasticsearchQueryGenerator
+    autowire: true
+
+  app.service.elasticsearch_connector_service:
+    class: AppBundle\Service\ElasticsearchConnector
+    arguments: ['%es_server%', '%es_username%', '%es_password%']
+
+  app.service.filter_generator_service:
+    class: AppBundle\Service\FilterGenerator
     autowire: true

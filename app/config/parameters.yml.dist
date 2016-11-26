@@ -17,3 +17,8 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    # Elasticsearch configurations
+    es_server: ~
+    es_username: ~
+    es_password: ~
