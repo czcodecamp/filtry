@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Facade\ProductFacade;
 use AppBundle\Repository\ProductParameterRepository;
 use AppBundle\Repository\ProductCategoryRepository;
+use AppBundle\Service\ElasticsearchConnector;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -15,9 +16,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class ProductExportController
 {
-	const ES_INDEX_URL = 'http://sandbox-cluster-2194566853.eu-west-1.bonsaisearch.net/codecampfilter/';
-	const ES_USERNAME = 'h80n7saww1';
-	const ES_PASSWORD = 'kkvxaaia0h';
 	const ES_MAPPING = ' {
 		 "mappings" : {
 			 "product" : {
@@ -102,34 +100,18 @@ class ProductExportController
 	private $productFacade;
 	private $productParameterRepository;
 	private $productCategoryRepository;
+    private $elasticsearchConnector;
 
-	public function __construct(ProductFacade $productFacade, ProductParameterRepository $productParameterRepository, ProductCategoryRepository $productCategoryRepository)
-	{
+	public function __construct(
+	    ProductFacade $productFacade,
+        ProductParameterRepository $productParameterRepository,
+        ProductCategoryRepository $productCategoryRepository,
+        ElasticsearchConnector $elasticsearchConnector
+    ) {
 		$this->productFacade = $productFacade;
 		$this->productParameterRepository = $productParameterRepository;
 		$this->productCategoryRepository = $productCategoryRepository;
-	}
-
-	private function httpRequest($url, $data = '', $method = false, $headers = ['Content-Type: application/json'])
-	{
-		$ch = curl_init();
-
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_USERPWD, self::ES_USERNAME . ":" . self::ES_PASSWORD);
-
-		if ($method) {
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-		} else {
-			curl_setopt($ch, CURLOPT_POST, 1);
-		}
-
-		$response = curl_exec($ch);
-		curl_close($ch);
-		return $response;
+        $this->elasticsearchConnector = $elasticsearchConnector;
 	}
 
 	/**
@@ -139,10 +121,10 @@ class ProductExportController
 	{
 		if ($overwrite) {
 			// ES - remove index
-			$this->httpRequest(self::ES_INDEX_URL, '', 'DELETE');
+            $this->elasticsearchConnector->request('codecampfilter', '', 'DELETE');
 
 			// ES - create index + mapping
-			$this->httpRequest(self::ES_INDEX_URL, self::ES_MAPPING);
+            $this->elasticsearchConnector->request('codecampfilter', self::ES_MAPPING, 'POST');
 		}
 
 		$rawData = $this->productFacade->getAll(100000, 0);
@@ -200,7 +182,7 @@ class ProductExportController
 
 			if ($overwrite) {
 				// ES - add product
-				$this->httpRequest(self::ES_INDEX_URL . 'product/' . $product->id, json_encode($product));
+                $this->elasticsearchConnector->request('codecampfilter/product/' . $product->id, json_encode($product), 'POST');
 			}
 
 			$data[] = $product;
