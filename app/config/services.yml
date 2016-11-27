@@ -65,6 +65,10 @@ services:
     class: AppBundle\Repository\ProductParameterRepository
     factory:   ['@doctrine.orm.default_entity_manager', getRepository]
     arguments: ['AppBundle\Entity\ProductParameter']
+    
+  app.service.filter:
+    class: AppBundle\Service\Filter
+    autowire: true
 
   encoder:
     class: Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder
