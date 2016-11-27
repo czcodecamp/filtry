@@ -13,12 +13,14 @@ use AppBundle\Service\ElasticsearchConnector;
 class FilterGenerator {
 
     const ES_URI_PRODUCT_SEARCH = 'codecampfilter/product/_search';
+    const ES_URI_PARAMETER_SEARCH = 'codecampfilter/parameter/_search';
 
 	private $parameterRepository;
 	private $elasticsearchQueryGenerator;
 	private $elasticsearchConnector;
 	private $filterCategory = null;
 	private $inputFilters = [];
+	private $parameters = [];
 
 	public function __construct(
 	    ParameterRepository $parameterRepository,
@@ -28,21 +30,31 @@ class FilterGenerator {
 		$this->parameterRepository = $parameterRepository;
 		$this->elasticsearchQueryGenerator = $elasticsearchQueryGenerator;
 		$this->elasticsearchConnector = $elasticsearchConnector;
+
+        $this->loadParameters();
 	}
+
+	private function loadParameters() {
+        $response = $this->elasticsearchConnector->request(self::ES_URI_PARAMETER_SEARCH);
+        $rawData = json_decode($response);
+
+        foreach ($rawData->hits->hits as $hit) {
+            $this->parameters[$hit->_source->id] = $hit->_source;
+        }
+    }
+
+    /**
+     * @param $parameterId integer
+     * @return null|object
+     */
+    private function getParameter($parameterId) {
+        return isset($this->parameters[$parameterId]) ? $this->parameters[$parameterId] : null;
+    }
 
 	public function setInputFilters($categoryId = null, array $inputFilters = []) {
 		$this->filterCategory = $categoryId;
 		$this->inputFilters = $inputFilters;
 	}
-
-    /**
-     * TODO: Replace parameter repository source to Elasticseach
-     * @param $parameterId integer
-     * @return null|Parameter
-     */
-	private function getParameter($parameterId) {
-	    return $this->parameterRepository->findOneBy(['id' => $parameterId]);
-    }
 
 	private function processData($rawData) {
 	    $filters = [];
@@ -59,7 +71,7 @@ class FilterGenerator {
             $parameter = $this->getParameter($parameterId);
 
             // get value buckets by data type
-            switch ($parameter->getDataType()) {
+            switch ($parameter->dataType) {
                 case 'string':
                     $valueBuckets = $bucket->parameter_value_string->buckets;
                     break;
@@ -87,13 +99,13 @@ class FilterGenerator {
 
             $filter = [
                 'id' => $parameterId,
-                'type' => $parameter->getFilterType(),
-                'name' => $parameter->getName(),
+                'type' => $parameter->filterType,
+                'name' => $parameter->name,
                 'options' => $options
             ];
 
             // extra metrics for range filter type
-            if ($parameter->getFilterType() == 'range') {
+            if ($parameter->filterType == 'range') {
                 $from = $bucket->parameter_value_float_min->value;
                 $to = $bucket->parameter_value_float_max->value;
                 $filter['range'] = [
@@ -102,7 +114,7 @@ class FilterGenerator {
                 ];
             }
 
-            $filters[$parameter->getPriority()] = $filter;
+            $filters[$parameter->priority] = $filter;
         }
 
         // sort filters by priority
@@ -119,7 +131,7 @@ class FilterGenerator {
 		foreach ($this->inputFilters as $parameterId => $value) {
 			$parameter = $this->getParameter($parameterId);
 
-			switch ($parameter->getFilterType()) {
+			switch ($parameter->filterType) {
 				case 'yesno':
 					$this->elasticsearchQueryGenerator->addFilterYesno($parameterId, $value);
 					break;

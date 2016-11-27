@@ -20,8 +20,8 @@ services:
     class: AppBundle\Controller\ProductController
     autowire: true
 
-  app.controller.product_export_controller:
-    class: AppBundle\Controller\ProductExportController
+  app.controller.export_controller:
+    class: AppBundle\Controller\ExportController
     autowire: true
 
   app.controller.user_controller:
