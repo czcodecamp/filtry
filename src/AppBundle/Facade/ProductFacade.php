@@ -27,7 +27,7 @@ class ProductFacade {
 	}
 	
 	public function findByCategoryAndFilter(Category $category, $filter, $limit, $offset) {
-		$query =  $this->productRepository->findByCategory($category);
+		$query =  $this->productRepository->findByCategoryAndFilter($category);
 
 		
 		foreach ($filter as $k => $v) {
