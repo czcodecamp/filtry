@@ -18,16 +18,20 @@ class Filter {
 	}
 
 	/**
-         * 
-         * @param string $filterParams
-         */
-        public function prepareParams($filterParams) {              
-                if (strpos($filterParams, 'f:') === false) {
-                        return;
-                }
+	 * @param type $filterParams
+	 * @return array
+	 * @throws \Exception
+	 */
+        public function prepareParams($filterParams) {
 		$dataQuery = array();
 		$dataFilter = array();
 		
+                if (strpos($filterParams, 'f:') === false) {
+			$data['query'] = $dataQuery;
+			$data['filter'] = $dataFilter;
+			return $data;  
+                }
+
                 $string = explode('f:', $filterParams);
                 $filters = explode(';', $string[1]);
                 

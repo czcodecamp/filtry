@@ -42,10 +42,7 @@ class CategoryController
 		//filter
 		$filterParams = $reguest->get('filter');
 		
-		$data = null;
-		if($filterParams) {
-			$data = $this->filterService->prepareParams($filterParams);
-		}
+		$data = $this->filterService->prepareParams($filterParams);
 
 		$category = $this->categoryFacade->getBySlug($slug);
 
