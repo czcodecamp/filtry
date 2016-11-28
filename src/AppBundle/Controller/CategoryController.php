@@ -8,6 +8,8 @@ use AppBundle\Service\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use AppBundle\Service\Filter;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author Vašek Boch <vasek.boch@live.com>
@@ -18,38 +20,49 @@ class CategoryController
 {
 	private $categoryFacade;
 	private $productFacade;
+	private $filterService;
 
 	public function __construct(
 		CategoryFacade $categoryFacade,
-		ProductFacade $productFacade
+		ProductFacade $productFacade,
+		Filter $filterService
+		
 	) {
 
 		$this->categoryFacade = $categoryFacade;
 		$this->productFacade = $productFacade;
+		$this->filterService = $filterService;
 	}
 	/**
 	 * @Route("/vyber/{slug}/{page}", name="category_detail", requirements={"page": "\d+"}, defaults={"page": 1})
 	 * @Template("category/detail.html.twig")
 	 */
-	public function categoryDetail($slug, $page)
+	public function categoryDetail($slug, $page, Request $request)
 	{
+		//filter
+		$filterParams = $request->get('filter');	
+		$data = $this->filterService->prepareParams($filterParams);
+
 		$category = $this->categoryFacade->getBySlug($slug);
 
 		if (!$category) {
 			throw new NotFoundHttpException("Kategorie neexistuje");
 		}
 
-		$countByCategory = $this->productFacade->getCountByCategory($category);
+		$countByCategory = $this->productFacade->getCountByCategory($category, $data['query']);
 
 		$paginator = new Paginator($countByCategory, 6);
 		$paginator->setCurrentPage($page);
+		
+		$products = $this->productFacade->findByCategoryAndFilter($category, $data['query'], $paginator->getLimit(), $paginator->getOffset());
 		return [
-			"products" => $this->productFacade->findByCategory($category, $paginator->getLimit(), $paginator->getOffset()),
+			"products" => $products,		    
 			"categories" => $this->categoryFacade->getParentCategories($category),
 			"category" => $category,
 			"currentPage" => $page,
 			"totalPages" => $paginator->getTotalPageCount(),
 			"pageRange" => $paginator->getPageRange(5),
+		    	"filter" => $filterParams,
 		];
 	}
 
