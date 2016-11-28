@@ -37,11 +37,10 @@ class CategoryController
 	 * @Route("/vyber/{slug}/{page}", name="category_detail", requirements={"page": "\d+"}, defaults={"page": 1})
 	 * @Template("category/detail.html.twig")
 	 */
-	public function categoryDetail($slug, $page,Request $reguest)
+	public function categoryDetail($slug, $page, Request $request)
 	{
 		//filter
-		$filterParams = $reguest->get('filter');
-		
+		$filterParams = $request->get('filter');	
 		$data = $this->filterService->prepareParams($filterParams);
 
 		$category = $this->categoryFacade->getBySlug($slug);
@@ -50,7 +49,7 @@ class CategoryController
 			throw new NotFoundHttpException("Kategorie neexistuje");
 		}
 
-		$countByCategory = $this->productFacade->getCountByCategory($category);
+		$countByCategory = $this->productFacade->getCountByCategory($category, $data['query']);
 
 		$paginator = new Paginator($countByCategory, 6);
 		$paginator->setCurrentPage($page);
@@ -63,6 +62,7 @@ class CategoryController
 			"currentPage" => $page,
 			"totalPages" => $paginator->getTotalPageCount(),
 			"pageRange" => $paginator->getPageRange(5),
+		    	"filter" => $filterParams,
 		];
 	}
 
