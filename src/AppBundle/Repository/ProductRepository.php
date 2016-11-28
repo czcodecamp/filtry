@@ -31,12 +31,16 @@ class ProductRepository extends EntityRepository
 			->setParameter("rgt", $category->getRight());
 		return $builder;
 	}
-
-	public function countAll() {
-		return $this->_em->createQueryBuilder()
-			->select('COUNT(p.id)')
-			->from('AppBundle\Entity\Product', 'p')
-			->getQuery()->getSingleScalarResult();
+	
+	/**
+	 * @return QueryBuilder
+	 */
+	public function getAll()
+	{
+		$builder = $this->_em->createQueryBuilder()
+			->select('p')
+			->from('AppBundle\Entity\Product', 'p');
+		return $builder;
 	}
 
 }
