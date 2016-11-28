@@ -74,3 +74,8 @@ services:
     class: Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder
     arguments:
       - 13
+      
+  app.twig.url_extension:
+    class: AppBundle\Twig\UrlExtension
+    tags:
+      - { name: twig.extension } 
