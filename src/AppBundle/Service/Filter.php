@@ -42,6 +42,10 @@ class Filter {
 			if(!$param) {
 				throw new \Exception;
 			}
+			if($param->getFilterType() == 'multiselect' || 
+				$param->getFilterType() == 'range') {
+				$values = explode(',', $values);
+			}
                         // ulozim do pole dle typu
                         $dataQuery[$paramId]['param'] = $param;
                         $dataQuery[$paramId]['values'] = $values;
