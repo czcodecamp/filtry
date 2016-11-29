@@ -27,8 +27,7 @@ class CategoryController
 	public function __construct(
 		CategoryFacade $categoryFacade,
 		ProductFacade $productFacade,
-		Filter $filterService
-		
+		Filter $filterService,
 		ProductFacade $productFacade,
 		FilterGenerator $filterGenerator
 	) {
