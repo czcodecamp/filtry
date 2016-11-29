@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Facade\CategoryFacade;
 use AppBundle\Facade\ProductFacade;
 use AppBundle\Service\Paginator;
+use AppBundle\Service\FilterGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,17 +22,21 @@ class CategoryController
 	private $categoryFacade;
 	private $productFacade;
 	private $filterService;
+	private $filterGenerator;
 
 	public function __construct(
 		CategoryFacade $categoryFacade,
 		ProductFacade $productFacade,
 		Filter $filterService
 		
+		ProductFacade $productFacade,
+		FilterGenerator $filterGenerator
 	) {
 
 		$this->categoryFacade = $categoryFacade;
 		$this->productFacade = $productFacade;
 		$this->filterService = $filterService;
+		$this->filterGenerator = $filterGenerator;
 	}
 	/**
 	 * @Route("/vyber/{slug}/{page}", name="category_detail", requirements={"page": "\d+"}, defaults={"page": 1})

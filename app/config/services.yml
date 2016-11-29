@@ -20,6 +20,10 @@ services:
     class: AppBundle\Controller\ProductController
     autowire: true
 
+  app.controller.export_controller:
+    class: AppBundle\Controller\ExportController
+    autowire: true
+
   app.controller.user_controller:
     class: AppBundle\Controller\UserController
     autowire: true
@@ -46,6 +50,11 @@ services:
     factory:   ['@doctrine.orm.default_entity_manager', getRepository]
     arguments: ['AppBundle\Entity\Category']
 
+  app.repository.product_category_repository:
+    class: AppBundle\Repository\ProductCategoryRepository
+    factory:   ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments: ['AppBundle\Entity\ProductCategory']
+
   app.repository.faq_repository:
     class: AppBundle\Repository\FaqRepository
     factory:   ['@doctrine.orm.default_entity_manager', getRepository]
@@ -65,7 +74,7 @@ services:
     class: AppBundle\Repository\ProductParameterRepository
     factory:   ['@doctrine.orm.default_entity_manager', getRepository]
     arguments: ['AppBundle\Entity\ProductParameter']
-    
+
   app.service.filter:
     class: AppBundle\Service\Filter
     autowire: true
@@ -74,8 +83,20 @@ services:
     class: Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder
     arguments:
       - 13
-      
+
   app.twig.url_extension:
     class: AppBundle\Twig\UrlExtension
     tags:
-      - { name: twig.extension } 
+      - { name: twig.extension }
+
+  app.service.elasticsearch_query_generator_service:
+    class: AppBundle\Service\ElasticsearchQueryGenerator
+    autowire: true
+
+  app.service.elasticsearch_connector_service:
+    class: AppBundle\Service\ElasticsearchConnector
+    arguments: ['%es_server%', '%es_username%', '%es_password%']
+
+  app.service.filter_generator_service:
+    class: AppBundle\Service\FilterGenerator
+    autowire: true
