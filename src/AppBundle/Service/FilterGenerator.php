@@ -126,7 +126,10 @@ class FilterGenerator {
 
 	public function generateFilters() {
 		$this->elasticsearchQueryGenerator->reset();
-		$this->elasticsearchQueryGenerator->setFilterCategory($this->filterCategory);
+
+		if (!is_null($this->filterCategory)) {
+			$this->elasticsearchQueryGenerator->setFilterCategory($this->filterCategory);
+		}
 
 		foreach ($this->inputFilters as $type => $filters) {
 			foreach ($filters as $parameterId => $value) {
