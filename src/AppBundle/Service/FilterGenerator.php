@@ -128,19 +128,19 @@ class FilterGenerator {
 		$this->elasticsearchQueryGenerator->reset();
 		$this->elasticsearchQueryGenerator->setFilterCategory($this->filterCategory);
 
-		foreach ($this->inputFilters as $parameterId => $value) {
-			$parameter = $this->getParameter($parameterId);
-
-			switch ($parameter->filterType) {
-				case 'yesno':
-					$this->elasticsearchQueryGenerator->addFilterYesno($parameterId, $value);
-					break;
-				case 'range':
-					$this->elasticsearchQueryGenerator->addFilterRange($parameterId, $value[0], $value[1]);
-					break;
-				case 'multiselect':
-					$this->elasticsearchQueryGenerator->addFilterMultiselect($parameterId, $value);
-					break;
+		foreach ($this->inputFilters as $type => $filters) {
+			foreach ($filters as $parameterId => $value) {
+				switch ($type) {
+					case 'yesno':
+						$this->elasticsearchQueryGenerator->addFilterYesno($parameterId, $value);
+						break;
+					case 'range':
+						$this->elasticsearchQueryGenerator->addFilterRange($parameterId, $value[0], $value[1]);
+						break;
+					case 'multiselect':
+						$this->elasticsearchQueryGenerator->addFilterMultiselect($parameterId, $value);
+						break;
+				}
 			}
 		}
 
