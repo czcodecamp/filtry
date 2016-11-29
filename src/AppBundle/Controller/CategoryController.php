@@ -54,20 +54,6 @@ class CategoryController
 			"currentPage" => $page,
 			"totalPages" => $paginator->getTotalPageCount(),
 			"pageRange" => $paginator->getPageRange(5),
-			"testFilters" => $this->getTestFilters($category->getId()),
 		];
-	}
-
-	private function getTestFilters($categoryId)
-	{
-		$testInputFilters = [
-			1 => ['Apple', 'Samsung'],
-			2 => [10000, 30000],
-			3 => true,
-		];
-
-		$this->filterGenerator->setInputFilters($categoryId, $testInputFilters);
-
-		return $this->filterGenerator->generateFilters();
 	}
 }
