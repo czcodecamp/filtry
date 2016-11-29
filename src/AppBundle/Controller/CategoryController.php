@@ -43,6 +43,12 @@ class CategoryController
 	 */
 	public function categoryDetail($slug, $page, Request $request)
 	{
+		// Debug - {temp} - TODO: spracovat
+		$filtering = $request->get('filtering');
+		if ($filtering) {
+			dump($filtering);
+		}
+
 		//filter
 		$filterParams = $request->get('filter');	
 		$data = $this->filterService->prepareParams($filterParams);
@@ -66,8 +72,15 @@ class CategoryController
 			"currentPage" => $page,
 			"totalPages" => $paginator->getTotalPageCount(),
 			"pageRange" => $paginator->getPageRange(5),
-		    	"filter" => $filterParams,
+			"filter" => $filterParams,
+			"usedFilters" => $data['filter'],
+			"filterOptions" => $this->getFilterOptions($category->getId(), $data['filter']),
 		];
 	}
 
+	private function getFilterOptions($categoryId, $inputFilters)
+	{
+		$this->filterGenerator->setInputFilters($categoryId, $inputFilters);
+		return $this->filterGenerator->generateFilters();
+	}
 }

@@ -1,0 +1,53 @@
+{% if filterOptions is defined %}
+    <p class="lead">Filter</p>
+    <form method="post">
+        {% if usedFilters is defined and usedFilters is not empty %}
+            {% for type, items in usedFilters %}
+                {% for id, value in items %}
+                    {% if type == 'yesno' %}
+                        <input type="hidden" name="filtering[{{ id }}]" value="{{ value }}">
+                    {% else %}
+                        {% for val in value %}
+                            <input type="hidden" name="filtering[{{ id }}][]" value="{{ val }}">
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+        <ul class="list-group">
+            {% for filterOption in filterOptions %}
+                <li class="list-group-item">
+                    <strong>{{ filterOption.name }}</strong><br>
+                    {% if filterOption.type == 'multiselect' %}
+                        {% for option in filterOption.options %}
+                            <div class="checkbox">
+                                <label>
+                                    <input name="filtering[{{ filterOption.id }}][]" type="checkbox" value="{{ option.value }}">
+                                    {{ option.value }} ({{ option.count }})
+                                </label>
+                            </div>
+                        {% endfor %}
+                    {% elseif filterOption.type == 'range' %}
+                        <div class="input-group">
+                            <input type="number" name="filtering[{{ filterOption.id }}][]" class="form-control" placeholder="{{ filterOption.range.from }}">
+                            <div class="input-group-addon">-</div>
+                            <input type="number" name="filtering[{{ filterOption.id }}][]" class="form-control" placeholder="{{ filterOption.range.to }}">
+                        </div>
+                    {% elseif filterOption.type == 'yesno' %}
+                        {% for option in filterOption.options %}
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="filtering[{{ filterOption.id }}]" value="{{ option.value }}" >
+                                    {% if option.value %} ano {% else %} nie {% endif %} ({{ option.count }})
+                                </label>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </li>
+            {% endfor %}
+            <li class="list-group-item">
+                <button type="submit" class="btn btn-default btn-block">Filtrovať</button>
+            </li>
+        </ul>
+    </form>
+{% endif %}

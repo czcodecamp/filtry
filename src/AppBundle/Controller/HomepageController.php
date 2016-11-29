@@ -5,6 +5,7 @@ use AppBundle\Facade\ProductFacade;
 use AppBundle\Facade\UserFacade;
 use AppBundle\Service\Paginator;
 use AppBundle\Service\Filter;
+use AppBundle\Service\FilterGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,13 +28,15 @@ class HomepageController
 		ProductFacade $productFacade,
 		CategoryFacade $categoryFacade,
 		UserFacade $userFacade,
-		Filter $filterService
+		Filter $filterService,
+		FilterGenerator $filterGenerator
 	) {
 
 		$this->productFacade = $productFacade;
 		$this->categoryFacade = $categoryFacade;
 		$this->userFacade = $userFacade;
 		$this->filterService = $filterService;
+		$this->filterGenerator = $filterGenerator;
 	}
 
 	/**
@@ -42,6 +45,12 @@ class HomepageController
 	 */
 	public function homepageAction(Request $request)
 	{
+		// Debug - {temp} - TODO: spracovat
+		$filtering = $request->get('filtering');
+		if ($filtering) {
+			dump($filtering);
+		}
+		
 		//filter
 		$filterParams = $request->get('filter');
 		$data = $this->filterService->prepareParams($filterParams);
@@ -59,7 +68,13 @@ class HomepageController
 			"pageRange" => $paginator->getPageRange(5),
 			"user" => $this->userFacade->getUser(),
 			"filter" => $filterParams,
+			"filterOptions" => $this->getFilterOptions($data['filter']),
 		];
 	}
 
+	private function getFilterOptions($inputFilters)
+	{
+		$this->filterGenerator->setInputFilters(null, $inputFilters);
+		return $this->filterGenerator->generateFilters();
+	}
 }
