@@ -87,7 +87,7 @@ class ProductFacade {
 		foreach ($filter as $k => $v) {
 			$param = $v['param'];
 			$values = $v['values']; 
-						
+
 			$query->join('AppBundle\Entity\ProductParameter', 'pp'.$k.'', 'WITH', 'p = pp'.$k.'.product')
 			->join('AppBundle\Entity\Parameter', 'param'.$k.'', 'WITH', 'param'.$k.' = pp'.$k.'.parameter');
 			
@@ -95,15 +95,13 @@ class ProductFacade {
 				->setParameter('param'.$k.'', $param);
 			
 			$dataType = ucfirst($param->getDataType());
-			if($param->getFilterType() == 'multiselect') {
-				$values = explode(',', $values);	
+			if($param->getFilterType() == 'multiselect') {	
 				$query->andWhere('pp'.$k.'.value'.$dataType.' IN (:values'.$k.')')
 				->setParameter('values'.$k.'', $values);			
 			} elseif($param->getFilterType() == 'yesno') {
 				$query->andWhere('pp'.$k.'.value'.$dataType.' = (:values'.$k.')')
 				->setParameter('values'.$k, (int)$values);			
 			} elseif($param->getFilterType() == 'range') {
-				$values = explode(',', $values);
 				$query->andWhere('pp'.$k.'.value'.$dataType.' >= :min'.$k.' and pp'.$k.'.value'.$dataType.' <= :max'.$k)
 				->setParameter('min'.$k, $values[0])
 				->setParameter('max'.$k, $values[1]);			
