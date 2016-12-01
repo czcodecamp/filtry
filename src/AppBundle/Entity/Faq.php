@@ -14,72 +14,72 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Faq
 {
 
-    /**
-     * @var int
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+	/**
+	 * @var int
+	 * @ORM\Id
+	 * @ORM\GeneratedValue
+	 * @ORM\Column(type="integer")
+	 */
+	private $id;
 
-    /**
-     * @var string
-     * @Column(type="string", length=1024)
-     */
-    private $question;
+	/**
+	 * @var string
+	 * @Column(type="string", length=1024)
+	 */
+	private $question;
 
-    /**
-     * @var string
-     * @Column(type="string", length=1024)
-     */
-    private $answer;
+	/**
+	 * @var string
+	 * @Column(type="string", length=1024)
+	 */
+	private $answer;
 
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
+	/**
+	 * @param int $id
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
 
-    /**
-     * @return string
-     */
-    public function getQuestion()
-    {
-        return $this->question;
-    }
+	/**
+	 * @return string
+	 */
+	public function getQuestion()
+	{
+		return $this->question;
+	}
 
-    /**
-     * @param string $question
-     */
-    public function setQuestion($question)
-    {
-        $this->question = $question;
-    }
+	/**
+	 * @param string $question
+	 */
+	public function setQuestion($question)
+	{
+		$this->question = $question;
+	}
 
-    /**
-     * @return string
-     */
-    public function getAnswer()
-    {
-        return $this->answer;
-    }
+	/**
+	 * @return string
+	 */
+	public function getAnswer()
+	{
+		return $this->answer;
+	}
 
-    /**
-     * @param string $answer
-     */
-    public function setAnswer($answer)
-    {
-        $this->answer = $answer;
-    }
+	/**
+	 * @param string $answer
+	 */
+	public function setAnswer($answer)
+	{
+		$this->answer = $answer;
+	}
 
 }

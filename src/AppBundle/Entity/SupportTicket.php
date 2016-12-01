@@ -12,31 +12,31 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SupportTicket
 {
-    /**
-     * @var int
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+	/**
+	 * @var int
+	 * @ORM\Id
+	 * @ORM\GeneratedValue
+	 * @ORM\Column(type="integer")
+	 */
+	private $id;
 
-    /**
-     * @var string
-     * @ORM\Column(type="string")
-     */
-    private $name;
+	/**
+	 * @var string
+	 * @ORM\Column(type="string")
+	 */
+	private $name;
 
-    /**
-     * @var string
-     * @ORM\Column(type="string")
-     */
-    private $email;
+	/**
+	 * @var string
+	 * @ORM\Column(type="string")
+	 */
+	private $email;
 
-    /**
-     * @var User
-     * @ORM\ManyToOne(targetEntity="User")
-     */
-    private $user;
+	/**
+	 * @var User
+	 * @ORM\ManyToOne(targetEntity="User")
+	 */
+	private $user;
 
 	/**
 	 * @var string
