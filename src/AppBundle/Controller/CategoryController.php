@@ -28,10 +28,8 @@ class CategoryController
 		CategoryFacade $categoryFacade,
 		ProductFacade $productFacade,
 		Filter $filterService,
-		ProductFacade $productFacade,
 		FilterGenerator $filterGenerator
 	) {
-
 		$this->categoryFacade = $categoryFacade;
 		$this->productFacade = $productFacade;
 		$this->filterService = $filterService;
