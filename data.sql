@@ -34,8 +34,8 @@ INSERT INTO `parameter` (`id`, `name`, `data_type`, `filter_type`, `priority`) V
 (4,	'Farba',	'string',	'multiselect',	4),
 (5,	'Veľkosť',	'string',	'multiselect',	5),
 (6,	'Pamäť',	'string',	'multiselect',	6),
-(7,	'HDMI',	'boolean',	'yesno',	7),
-(8,	'Počet reproduktorov',	'float',	'range',	8);
+(7,	'HDMI',	'boolean',	'yesno',	8),
+(8,	'Počet reproduktorov',	'float',	'range',	7);
 
 INSERT INTO `product` (`id`, `title`, `image`, `slug`, `description`, `price`, `rank`) VALUES
 (1245717,	'SCONTO CENTRO Psací stůl',	'https://zrks.cz/storage/img/20150429/458x258_75c47da75229482f87a677dfce1b2b75.jpg',	'sconto-centro-psaci-stul',	'moderní psací stůl\noptimální využití pro domácí kancelář\nvčetně komody a úložného prostoru\nkomoda 1 zásuvka a dvířka\notevřený regál s policí\nnožky a úchyty v barvě kovu\ndodáváno v demontu\nBarevné provedení: \n\ndub sonoma / bílá\n\nRozměry (š x v x h): \n\n85 x',	3999,	579),
@@ -179,7 +179,7 @@ INSERT INTO `product_parameter` (`id`, `product_id`, `parameter_id`, `value_stri
 (92,	1440987,	2,	NULL,	12990,	NULL),
 (93,	1479244,	2,	NULL,	2690,	NULL),
 (94,	1490520,	2,	NULL,	799,	NULL),
-(95,	1496540,	2,	NULL,	2799,	NULL),
+(95,	1496540,	2,	NULL,	2799.99,	NULL),
 (96,	1512564,	2,	NULL,	27590,	NULL),
 (97,	1512570,	2,	NULL,	24390,	NULL),
 (98,	1516604,	2,	NULL,	5690,	NULL),
@@ -224,7 +224,7 @@ INSERT INTO `product_parameter` (`id`, `product_id`, `parameter_id`, `value_stri
 (156,	1479244,	3,	NULL,	NULL,	1),
 (157,	1490520,	3,	NULL,	NULL,	0),
 (158,	1496540,	3,	NULL,	NULL,	1),
-(159,	1512564,	3,	NULL,	NULL,	0),
+(159,	1512564,	3,	NULL,	NULL,	1),
 (160,	1512570,	3,	NULL,	NULL,	0),
 (161,	1516604,	3,	NULL,	NULL,	0),
 (162,	1517045,	3,	NULL,	NULL,	1),
@@ -298,7 +298,7 @@ INSERT INTO `product_parameter` (`id`, `product_id`, `parameter_id`, `value_stri
 (345,	1440987,	5,	'35 \"',	NULL,	NULL),
 (348,	1496540,	5,	'4 \"',	NULL,	NULL),
 (349,	1512564,	5,	'5 \"',	NULL,	NULL),
-(350,	1512570,	5,	'4,3 \"',	NULL,	NULL),
+(350,	1512570,	5,	'4.3 \"',	NULL,	NULL),
 (354,	1546708,	5,	'55 \"',	NULL,	NULL),
 (355,	1561902,	5,	'5 \"',	NULL,	NULL),
 (356,	1564363,	5,	'35 \"',	NULL,	NULL),
@@ -310,11 +310,11 @@ INSERT INTO `product_parameter` (`id`, `product_id`, `parameter_id`, `value_stri
 (381,	1685432,	5,	'4 \"',	NULL,	NULL),
 (382,	1686879,	5,	'62 \"',	NULL,	NULL),
 (406,	1496540,	6,	'4 GB',	NULL,	NULL),
-(407,	1512564,	6,	'2,5 GB',	NULL,	NULL),
-(408,	1512570,	6,	'2,5 GB',	NULL,	NULL),
+(407,	1512564,	6,	'2.5 GB',	NULL,	NULL),
+(408,	1512570,	6,	'2.5 GB',	NULL,	NULL),
 (409,	1561902,	6,	'5 GB',	NULL,	NULL),
 (410,	1642173,	6,	'5 GB',	NULL,	NULL),
-(411,	1673368,	6,	'2,5 GB',	NULL,	NULL),
+(411,	1673368,	6,	'2.5 GB',	NULL,	NULL),
 (412,	1685432,	6,	'256 MB',	NULL,	NULL),
 (414,	1440987,	7,	NULL,	NULL,	0),
 (415,	1546708,	7,	NULL,	NULL,	1),
@@ -336,6 +336,8 @@ INSERT INTO `product_parameter` (`id`, `product_id`, `parameter_id`, `value_stri
 (434,	1564372,	8,	NULL,	1,	NULL),
 (435,	1564383,	8,	NULL,	1,	NULL),
 (436,	1566429,	8,	NULL,	2,	NULL),
-(437,	1686879,	8,	NULL,	4,	NULL);
+(437,	1686879,	8,	NULL,	4,	NULL),
+(438,	1561902,	7,	NULL,	NULL,	1),
+(439,	1642173,	7,	NULL,	NULL,	1);
 
--- 2016-11-15 15:00:28
+-- 2016-12-01 10:51:29
