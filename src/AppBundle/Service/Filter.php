@@ -41,9 +41,12 @@ class Filter {
 			if(!$param) {
 				throw new \Exception;
 			}
-			if($param->getFilterType() == 'multiselect' || 
-				$param->getFilterType() == 'range') {
+			if($param->getFilterType() == 'multiselect') {
 				$values = explode(',', $values);
+			} elseif($param->getFilterType() == 'range') {
+				$values = explode(',', $values);
+				$values[0] = $values[0] ?? '';
+				$values[1] = $values[1] ?? '';
 			}
                         // ulozim do pole dle typu
                         $dataQuery[$paramId]['param'] = $param;
@@ -72,7 +75,7 @@ class Filter {
 			}
 			$string = rtrim($string, ',');
 			$string .= ';';
-		}	
+		}
 		$string = $this->removeEmptyParam($string);
 		$string = rtrim($string, ';');
 		return $string;
