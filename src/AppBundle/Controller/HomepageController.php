@@ -77,6 +77,7 @@ class HomepageController
 			"user" => $this->userFacade->getUser(),
 			"filter" => $filterParams,
 			"usedFilters" => $data['filter'],
+			"usedQueries" => $data['query'],
 			"filterOptions" => $this->getFilterOptions($data['filter']),
 		];
 	}

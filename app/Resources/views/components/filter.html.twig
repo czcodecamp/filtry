@@ -1,5 +1,14 @@
 {% if filterOptions is defined %}
-    <p class="lead">Filter</p>
+    <p class="lead">
+        Filter
+        {% if usedFilters is defined and usedFilters is not empty %}
+            {% if category is defined %}
+                <a href="{{ path("category_detail", {"slug": category.slug }) }}" class="close"><span aria-hidden="true">&times;</span> zrušiť</a>
+            {% else %}
+                <a href="{{ path("homepage") }}" class="close"><span aria-hidden="true">&times;</span> zrušiť</a>
+            {% endif %}
+        {% endif %}
+    </p>
     <form method="post">
         {% if usedFilters is defined and usedFilters is not empty %}
             {% for type, items in usedFilters %}
@@ -15,6 +24,19 @@
             {% endfor %}
         {% endif %}
         <ul class="list-group">
+            {% for usedQuery in usedQueries %}
+                <li class="list-group-item">
+                    <strong>{{ usedQuery.param.getName() }}</strong>:
+                    {% if usedQuery.param.getFilterType() == 'multiselect' %}
+                        {{ usedQuery.values|join(', ') }}
+                    {% elseif usedQuery.param.getFilterType() == 'range' %}
+                        {{ usedQuery.values|join(' - ') }}
+                    {% elseif usedQuery.param.getFilterType() == 'yesno' %}
+                        {% if usedQuery.values %} ano {% else %} nie {% endif %}
+                    {% endif %}
+                </li>
+            {% endfor %}
+
             {% for filterOption in filterOptions %}
                 <li class="list-group-item">
                     <strong>{{ filterOption.name }}</strong><br>

@@ -80,6 +80,7 @@ class CategoryController
 			"pageRange" => $paginator->getPageRange(5),
 			"filter" => $filterParams,
 			"usedFilters" => $data['filter'],
+			"usedQueries" => $data['query'],
 			"filterOptions" => $this->getFilterOptions($category->getId(), $data['filter']),
 		];
 	}
