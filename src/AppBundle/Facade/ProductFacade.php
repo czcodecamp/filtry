@@ -4,7 +4,6 @@ namespace AppBundle\Facade;
 
 use AppBundle\Entity\Category;
 use AppBundle\Repository\ProductRepository;
-use \Helpers\Parameter\FilterType;
 
 /**
  * @author Vašek Boch <vasek.boch@live.com>

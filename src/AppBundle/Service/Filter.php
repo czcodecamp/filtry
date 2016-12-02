@@ -4,15 +4,16 @@ namespace AppBundle\Service;
 
 use AppBundle\Repository\ProductParameterRepository;
 use AppBundle\Repository\ParameterRepository;
+
 /**
  * @author Aleš Kůdela <kudela.ales@gmail.com>
  */
 class Filter {
-	
+
 	private $productParameterRepository;
 	private $parameterRepository;
-	
-	function __construct(ProductParameterRepository $productParameterRepository,ParameterRepository $parameterRepository) {
+
+	function __construct(ProductParameterRepository $productParameterRepository, ParameterRepository $parameterRepository) {
 		$this->productParameterRepository = $productParameterRepository;
 		$this->parameterRepository = $parameterRepository;
 	}
@@ -22,42 +23,43 @@ class Filter {
 	 * @return array
 	 * @throws \Exception
 	 */
-        public function prepareParams($filterParams) {
+	public function prepareParams($filterParams) {
 		$dataQuery = array();
 		$dataFilter = array();
-		
-                if (empty($filterParams)) {
+
+		if (empty($filterParams)) {
 			$data['query'] = $dataQuery;
 			$data['filter'] = $dataFilter;
-			return $data;  
-                }
+			return $data;
+		}
 
-                $filters = explode(';', $filterParams);
-                
-                foreach ($filters as $k => $filter) {
-                        list($paramId, $values) = explode(':', $filter);
-                        // vyhledam v db co je to za param...
+		$filters = explode(';', $filterParams);
+
+		foreach ($filters as $k => $filter) {
+			list($paramId, $values) = explode(':', $filter);
+			// vyhledam v db co je to za param...
 			$param = $this->parameterRepository->find($paramId);
-			if(!$param) {
+			if (!$param) {
 				throw new \Exception;
 			}
-			if($param->getFilterType() == 'multiselect') {
+			if ($param->getFilterType() == 'multiselect') {
 				$values = explode(',', $values);
-			} elseif($param->getFilterType() == 'range') {
+			} elseif ($param->getFilterType() == 'range') {
 				$values = explode(',', $values);
 				$values[0] = $values[0] ?? '';
 				$values[1] = $values[1] ?? '';
 			}
-                        // ulozim do pole dle typu
-                        $dataQuery[$paramId]['param'] = $param;
-                        $dataQuery[$paramId]['values'] = $values;
-                        $dataFilter[$param->getFilterType()][$paramId] = $values;
-                }      
+			// ulozim do pole dle typu
+			$dataQuery[$paramId]['param'] = $param;
+			$dataQuery[$paramId]['values'] = $values;
+			$dataFilter[$param->getFilterType()][$paramId] = $values;
+		}
 		$data['query'] = $dataQuery;
 		$data['filter'] = $dataFilter;
-		
-		return $data;                   
-        }
+
+		return $data;
+	}
+
 	/**
 	 * 
 	 * @param array $values
@@ -66,12 +68,12 @@ class Filter {
 		$string = '';
 		foreach ($values as $k => $val) {
 			$string .= $k . ':';
-			if(!is_array($val)) {
-				$string .= $val . ';'; 
+			if (!is_array($val)) {
+				$string .= $val . ';';
 				continue;
 			}
 			foreach ($val as $key => $value) {
-				$string .= $value . ','; 
+				$string .= $value . ',';
 			}
 			$string = rtrim($string, ',');
 			$string .= ';';
@@ -80,7 +82,7 @@ class Filter {
 		$string = rtrim($string, ';');
 		return $string;
 	}
-	
+
 	/**
 	 * Odstraní prázné hodnoty z linku
 	 * @param string $filterParams
@@ -90,4 +92,5 @@ class Filter {
 		$replacements = '';
 		return preg_replace($patterns, $replacements, $filterParams);
 	}
+
 }
