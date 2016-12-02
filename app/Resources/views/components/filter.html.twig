@@ -5,10 +5,10 @@
             {% for type, items in usedFilters %}
                 {% for id, value in items %}
                     {% if type == 'yesno' %}
-                        <input type="hidden" name="filtering[{{ id }}]" value="{{ value }}">
+                        <input type="hidden" name="filter[{{ id }}]" value="{{ value }}">
                     {% else %}
                         {% for val in value %}
-                            <input type="hidden" name="filtering[{{ id }}][]" value="{{ val }}">
+                            <input type="hidden" name="filter[{{ id }}][]" value="{{ val }}">
                         {% endfor %}
                     {% endif %}
                 {% endfor %}

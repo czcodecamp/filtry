@@ -9,6 +9,9 @@ use AppBundle\Service\FilterGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\RouterInterface;
+
 
 /**
  * @author Vašek Boch <vasek.boch@live.com>
@@ -22,14 +25,16 @@ class HomepageController
 	private $productFacade;
 	private $categoryFacade;
 	private $userFacade;
-	private $filterService;	
+	private $filterService;
+	private $router;
 
 	public function __construct(
 		ProductFacade $productFacade,
 		CategoryFacade $categoryFacade,
 		UserFacade $userFacade,
 		Filter $filterService,
-		FilterGenerator $filterGenerator
+		FilterGenerator $filterGenerator,
+		RouterInterface $router
 	) {
 
 		$this->productFacade = $productFacade;
@@ -37,6 +42,7 @@ class HomepageController
 		$this->userFacade = $userFacade;
 		$this->filterService = $filterService;
 		$this->filterGenerator = $filterGenerator;
+		$this->router = $router;
 	}
 
 	/**
@@ -48,11 +54,14 @@ class HomepageController
 		// Debug - {temp} - TODO: spracovat
 		$filtering = $request->get('filtering');
 		if ($filtering) {
-			dump($filtering);
-		}
-		
+			$filterParams = $this->filterService->createLinkParam($filtering);	
+			$link = urldecode($this->router->generate('homepage', array('filter' => $filterParams)));
+			return RedirectResponse::create($link);
+		}		
 		//filter
-		$filterParams = $request->get('filter');
+		if(!isset($filterParams)) {
+			$filterParams = $request->get('filter');
+		}
 		$data = $this->filterService->prepareParams($filterParams);
 
 		$page = intval($request->get('page', 1));
@@ -68,6 +77,7 @@ class HomepageController
 			"pageRange" => $paginator->getPageRange(5),
 			"user" => $this->userFacade->getUser(),
 			"filter" => $filterParams,
+			"usedFilters" => $data['filter'],
 			"filterOptions" => $this->getFilterOptions($data['filter']),
 		];
 	}

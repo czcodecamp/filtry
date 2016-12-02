@@ -11,6 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AppBundle\Service\Filter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @author Vašek Boch <vasek.boch@live.com>
@@ -23,17 +25,20 @@ class CategoryController
 	private $productFacade;
 	private $filterService;
 	private $filterGenerator;
+	private $router;
 
 	public function __construct(
 		CategoryFacade $categoryFacade,
 		ProductFacade $productFacade,
 		Filter $filterService,
-		FilterGenerator $filterGenerator
+		FilterGenerator $filterGenerator,
+		RouterInterface $router
 	) {
 		$this->categoryFacade = $categoryFacade;
 		$this->productFacade = $productFacade;
 		$this->filterService = $filterService;
 		$this->filterGenerator = $filterGenerator;
+		$this->router = $router;
 	}
 	/**
 	 * @Route("/vyber/{slug}/{page}", name="category_detail", requirements={"page": "\d+"}, defaults={"page": 1})
@@ -44,11 +49,15 @@ class CategoryController
 		// Debug - {temp} - TODO: spracovat
 		$filtering = $request->get('filtering');
 		if ($filtering) {
-			dump($filtering);
+			$filterParams = $this->filterService->createLinkParam($filtering);	
+			$link = urldecode($this->router->generate('category_detail', array('filter' => $filterParams, 'slug' => $slug, 'page' => $page)));
+			return RedirectResponse::create($link);
 		}
 
 		//filter
-		$filterParams = $request->get('filter');	
+		if(!isset($filterParams)) {
+			$filterParams = $request->get('filter');
+		}	
 		$data = $this->filterService->prepareParams($filterParams);
 
 		$category = $this->categoryFacade->getBySlug($slug);

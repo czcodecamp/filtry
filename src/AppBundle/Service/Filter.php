@@ -26,14 +26,13 @@ class Filter {
 		$dataQuery = array();
 		$dataFilter = array();
 		
-                if (strpos($filterParams, 'f:') === false) {
+                if (empty($filterParams)) {
 			$data['query'] = $dataQuery;
 			$data['filter'] = $dataFilter;
 			return $data;  
                 }
 
-                $string = explode('f:', $filterParams);
-                $filters = explode(';', $string[1]);
+                $filters = explode(';', $filterParams);
                 
                 foreach ($filters as $k => $filter) {
                         list($paramId, $values) = explode(':', $filter);
@@ -56,4 +55,36 @@ class Filter {
 		
 		return $data;                   
         }
+	/**
+	 * 
+	 * @param array $values
+	 */
+	public function createLinkParam($values) {
+		$string = '';
+		foreach ($values as $k => $val) {
+			$string .= $k . ':';
+			if(!is_array($val)) {
+				$string .= $val . ';'; 
+				continue;
+			}
+			foreach ($val as $key => $value) {
+				$string .= $value . ','; 
+			}
+			$string = rtrim($string, ',');
+			$string .= ';';
+		}	
+		$string = $this->removeEmptyParam($string);
+		$string = rtrim($string, ';');
+		return $string;
+	}
+	
+	/**
+	 * Odstraní prázné hodnoty z linku
+	 * @param string $filterParams
+	 */
+	private function removeEmptyParam($filterParams) {
+		$patterns = '/[0-9]{1,}:;/';
+		$replacements = '';
+		return preg_replace($patterns, $replacements, $filterParams);
+	}
 }
