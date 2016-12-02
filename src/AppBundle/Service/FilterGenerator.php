@@ -70,6 +70,11 @@ class FilterGenerator {
 			$parameterId = $bucket->key;
 			$parameter = $this->getParameter($parameterId);
 
+			// skip input filters
+			if (isset($this->inputFilters[$parameter->filterType][$parameterId])) {
+				continue;
+			}
+
 			// get value buckets by data type
 			switch ($parameter->dataType) {
 				case 'string':
