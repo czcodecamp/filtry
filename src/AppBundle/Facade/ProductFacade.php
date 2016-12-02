@@ -102,9 +102,15 @@ class ProductFacade {
 				$query->andWhere('pp'.$k.'.value'.$dataType.' = (:values'.$k.')')
 				->setParameter('values'.$k, (int)$values);			
 			} elseif($param->getFilterType() == 'range') {
-				$query->andWhere('pp'.$k.'.value'.$dataType.' >= :min'.$k.' and pp'.$k.'.value'.$dataType.' <= :max'.$k)
-				->setParameter('min'.$k, $values[0])
-				->setParameter('max'.$k, $values[1]);			
+				if(isset($values[0]) && !empty($values[0])) {
+					$query->andWhere('pp'.$k.'.value'.$dataType.' >= :min'.$k)
+					->setParameter('min'.$k, $values[0]);					
+				}
+				if(isset($values[1]) && !empty($values[1])) {				
+					$query->andWhere('pp'.$k.'.value'.$dataType.' <= :max'.$k)
+					->setParameter('max'.$k, $values[1]);
+				}					
+		
 			}	
 		}
 		return $query;
