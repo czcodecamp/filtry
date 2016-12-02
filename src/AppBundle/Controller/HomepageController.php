@@ -51,7 +51,6 @@ class HomepageController
 	 */
 	public function homepageAction(Request $request)
 	{
-		// Debug - {temp} - TODO: spracovat
 		$filtering = $request->get('filtering');
 		if ($filtering) {
 			$filterParams = $this->filterService->createLinkParam($filtering);	
