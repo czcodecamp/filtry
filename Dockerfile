@@ -6,6 +6,8 @@ RUN docker-php-ext-install pdo_mysql
 
 COPY . /var/www/html/cc-filters
 
-EXPOSE 8000
+COPY ./docker_init/vhost.conf /etc/apache2/sites-enabled/000-default.conf
 
-CMD ["php", "/var/www/html/cc-filters/bin/console", "server:run"]
+RUN /var/www/html/cc-filters/docker_init/init.sh
+
+EXPOSE 80
