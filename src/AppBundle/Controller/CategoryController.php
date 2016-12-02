@@ -49,7 +49,7 @@ class CategoryController
 		$filtering = $request->get('filtering');
 		if ($filtering) {
 			$filterParams = $this->filterService->createLinkParam($filtering);	
-			$link = urldecode($this->router->generate('category_detail', array('filter' => $filterParams, 'slug' => $slug, 'page' => $page)));
+			$link = urldecode($this->router->generate('category_detail', array('filter' => $filterParams, 'slug' => $slug)));
 			return RedirectResponse::create($link);
 		}
 
