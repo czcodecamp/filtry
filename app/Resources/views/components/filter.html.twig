@@ -30,7 +30,8 @@
                     {% if usedQuery.param.getFilterType() == 'multiselect' %}
                         {{ usedQuery.values|join(', ') }}
                     {% elseif usedQuery.param.getFilterType() == 'range' %}
-                        {{ usedQuery.values|join(' - ') }}
+                        {% if usedQuery.values[0] %} od {{ usedQuery.values[0] }} {% endif %}
+                        {% if usedQuery.values[1] %} do {{ usedQuery.values[1] }} {% endif %}
                     {% elseif usedQuery.param.getFilterType() == 'yesno' %}
                         {% if usedQuery.values %} ano {% else %} nie {% endif %}
                     {% endif %}
