@@ -9,5 +9,8 @@ http://www.gridshore.nl/esgui/#/query
 http://www.elastichq.org/app/index.php
 http://www.nlpcn.org:9999/web/
 
+## Docker image
+https://hub.docker.com/r/ppohoda/cc-filters/tags/
+
 ## Docker compose
 After run docker compose it is require fill elasticsearch (page: /export/1)
