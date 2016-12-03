@@ -9,7 +9,7 @@ services:
             - db
             - elastic
         ports:
-            - '8011:80'
+            - '80:80'
     db:
         container_name: cc-filters-db
         image: mysql
@@ -19,11 +19,11 @@ services:
             - MYSQL_PASSWORD=Q5OrgwOuSq
             - MYSQL_DATABASE=codecampfilter
         ports:
-            - '8012:3306'
+            - '3306:3306'
         volumes:
             - ./docker_init/data:/docker-entrypoint-initdb.d
     elastic:
         container_name: cc-filters-elastic
         image: elasticsearch:2
         ports:
-            - '8013:9200'
+            - '9200:9200'
