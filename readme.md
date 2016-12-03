@@ -8,3 +8,6 @@ https://h80n7saww1:kkvxaaia0h@sandbox-cluster-2194566853.eu-west-1.bonsaisearch.
 http://www.gridshore.nl/esgui/#/query
 http://www.elastichq.org/app/index.php
 http://www.nlpcn.org:9999/web/
+
+## Docker compose
+After run docker compose it is require fill elasticsearch (page: /export/1)

@@ -1,0 +1,15 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: cc-filters-db
+    database_port: 3306
+    database_name: codecampfilter
+    database_user: codecampfilter
+    database_password: Q5OrgwOuSq
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: sdfjasndjkfnakjsdfnasjbae
+    es_server: http://cc-filters-elastic:9200
+    es_username: null
+    es_password: null

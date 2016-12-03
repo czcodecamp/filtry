@@ -1,0 +1,17 @@
+FROM php:7-apache
+
+MAINTAINER Jozef Liška <jozoliska@gmail.com>
+
+RUN apt-get update && apt-get install -y wget && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install pdo_mysql
+
+COPY . /var/www/html/cc-filters
+
+COPY ./docker_init/vhost.conf /etc/apache2/sites-enabled/000-default.conf
+
+COPY ./docker_init/parameters.yml /var/www/html/cc-filters/app/config/parameters.yml
+
+RUN /var/www/html/cc-filters/docker_init/init.sh
+
+EXPOSE 80

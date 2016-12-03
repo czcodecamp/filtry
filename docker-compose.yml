@@ -1,0 +1,29 @@
+version: '2'
+services:
+    web:
+        container_name: cc-filters-web
+        build:
+            context: .
+            dockerfile: Dockerfile-compose
+        links:
+            - db
+            - elastic
+        ports:
+            - '8011:80'
+    db:
+        container_name: cc-filters-db
+        image: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=aS6sf16as1LR61
+            - MYSQL_USER=codecampfilter
+            - MYSQL_PASSWORD=Q5OrgwOuSq
+            - MYSQL_DATABASE=codecampfilter
+        ports:
+            - '8012:3306'
+        volumes:
+            - ./docker_init/data:/docker-entrypoint-initdb.d
+    elastic:
+        container_name: cc-filters-elastic
+        image: elasticsearch:2
+        ports:
+            - '8013:9200'
